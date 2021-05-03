@@ -147,9 +147,12 @@ const LoginReducer = (state = initialState, action) => {
       //   totalAmount: ...state.totalAmount,
       // };
 
+      console.log(Number.isInteger(state.totalAmount));
+      console.log(state.totalAmount);
+
       return {
         ...state,
-        totalAmount: state.totalAmount.toFixed(2),
+        totalAmount: state.totalAmount,
       };
 
     default:
