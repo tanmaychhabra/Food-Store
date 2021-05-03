@@ -1,0 +1,11 @@
+.nav-bar {
+    height: 80px;
+    width: 100vw;
+    background-color: #C91F37;
+}
+
+.nav-links {
+    display: grid;
+    grid-template-columns: 70% repeat(2, 15%);
+    align-items: center;
+}
