@@ -112,11 +112,11 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    firstName: state.firstName,
-    isLoggedIn: state.isLoggedIn,
-    firstNameError: state.firstNameError,
-    emailError: state.emailError,
-    passwordError: state.passwordError,
+    firstName: state.LoginReducer.firstName,
+    isLoggedIn: state.LoginReducer.isLoggedIn,
+    firstNameError: state.LoginReducer.firstNameError,
+    emailError: state.LoginReducer.emailError,
+    passwordError: state.LoginReducer.passwordError,
   };
 };
 

@@ -16,18 +16,8 @@ const App = (props) => {
         <Switch>
           <Route path="/" exact component={Login} />
           <Route path="/login" component={Login} />
-          <Route
-            path="/productList"
-            component={
-              props.isLoggedIn && props.firstName !== null ? ProductList : Login
-            }
-          />
-          <Route
-            path="/cart"
-            component={
-              props.isLoggedIn && props.firstName !== null ? Cart : Login
-            }
-          />
+          <Route path="/productList" component={ProductList} />
+          <Route path="/cart" component={Cart} />
         </Switch>
       </div>
     </Router>

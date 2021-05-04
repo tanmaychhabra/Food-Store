@@ -8,6 +8,7 @@ import { AiFillMinusCircle } from "react-icons/ai";
 import { AiFillPlusCircle } from "react-icons/ai";
 import { incrementCountChange, decrementCountChange } from "../actions/action";
 import { Grid } from "semantic-ui-react";
+import { Redirect } from "react-router";
 
 function ProductList(props) {
   useEffect(() => {
@@ -21,6 +22,7 @@ function ProductList(props) {
   }, []);
 
   const submitHandler = (data) => {
+    console.log(props.productData);
     data["count"] = 1;
     props.handleCartAdd(data);
   };
@@ -44,54 +46,65 @@ function ProductList(props) {
 
   return (
     <div style={{ backgroundColor: "#758283" }}>
-      <Grid columns={3}>
-        <Grid.Row>
-          {props.productData &&
-            props.productData.map((product, index) => {
-              return (
-                <Grid.Column>
-                  <Card style={{ marginTop: "20px" }}>
-                    <Image src={product.image} />
-                    <Card.Content>
-                      <Card.Header>{product.name}</Card.Header>
-                      <Card.Description>{product.description}</Card.Description>
-                      {product.count > 0 ? (
-                        <QuantityWrapper>
-                          <AiFillMinusCircle
-                            size="30"
-                            onClick={() =>
-                              handleCountChange(product, "decrease")
-                            }
-                          />
-                          <h3>{product.count}</h3>
-                          <AiFillPlusCircle
-                            size="30"
-                            onClick={() =>
-                              handleCountChange(product, "increase")
-                            }
-                          />
-                        </QuantityWrapper>
-                      ) : (
-                        <ButtonWrapper onClick={() => submitHandler(product)}>
-                          ADD TO CART
-                        </ButtonWrapper>
-                      )}
-                    </Card.Content>
-                  </Card>
-                </Grid.Column>
-              );
-            })}
-        </Grid.Row>
-      </Grid>
+      {props.isLoggedIn ? (
+        <>
+          <Redirect to="/productList" />
+          <Grid columns={3}>
+            <Grid.Row>
+              {props.productData &&
+                props.productData.map((product, index) => {
+                  return (
+                    <Grid.Column>
+                      <Card style={{ marginTop: "20px" }}>
+                        <Image src={product.image} />
+                        <Card.Content>
+                          <Card.Header>{product.name}</Card.Header>
+                          <Card.Description>
+                            {product.description}
+                          </Card.Description>
+                          {product.count > 0 ? (
+                            <QuantityWrapper>
+                              <AiFillMinusCircle
+                                size="30"
+                                onClick={() =>
+                                  handleCountChange(product, "decrease")
+                                }
+                              />
+                              <h3>{product.count}</h3>
+                              <AiFillPlusCircle
+                                size="30"
+                                onClick={() =>
+                                  handleCountChange(product, "increase")
+                                }
+                              />
+                            </QuantityWrapper>
+                          ) : (
+                            <ButtonWrapper
+                              onClick={() => submitHandler(product)}
+                            >
+                              ADD TO CART
+                            </ButtonWrapper>
+                          )}
+                        </Card.Content>
+                      </Card>
+                    </Grid.Column>
+                  );
+                })}
+            </Grid.Row>
+          </Grid>
+        </>
+      ) : (
+        <Redirect to="/login" />
+      )}
     </div>
   );
 }
 
 const mapStateToProps = (state) => {
   return {
-    productData: state.productList,
-    cartProductList: state.cartProductList,
-    isLoggedIn: state.isLoggedIn,
+    productData: state.ProductListReducer.productList,
+    cartProductList: state.CartListReducer.cartProductList,
+    isLoggedIn: state.LoginReducer.isLoggedIn,
   };
 };
 

@@ -1,25 +1,16 @@
 const initialState = {
-  signup_firstName: "Tanmay",
-  signup_lastName: "Chhabra",
-  signup_password: "",
+  productList: [],
 };
 
-const ProductListReducer = (state = { initialState }, action) => {
+const ProductListReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "SIGNUP_FIRST_NAME":
+    case "ADD_PRODUCTS":
+      action.payload.forEach((product, index) => {
+        product["id"] = index + 1;
+      });
       return {
         ...state,
-        signup_firstName: action.payload,
-      };
-    case "SIGNUP_LAST_NAME":
-      return {
-        ...state,
-        signup_lastName: action.payload,
-      };
-    case "SIGNUP_PASSWORD":
-      return {
-        ...state,
-        signup_password: action.payload,
+        productList: action.payload,
       };
     default:
       return state;

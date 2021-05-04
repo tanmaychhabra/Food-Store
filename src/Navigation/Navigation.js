@@ -74,9 +74,9 @@ const Navigation = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    userFirstName: state.firstName,
-    isLoggedIn: state.isLoggedIn,
-    cartProductList: state.cartProductList,
+    userFirstName: state.LoginReducer.firstName,
+    isLoggedIn: state.LoginReducer.isLoggedIn,
+    cartProductList: state.CartListReducer.cartProductList,
   };
 };
 
