@@ -1,5 +1,5 @@
 const initialState = {
-  firstName: "",
+  firstName: null,
   isLoggedIn: false,
   productList: [],
   cartProductList: [],
@@ -51,11 +51,10 @@ const LoginReducer = (state = initialState, action) => {
       )[0];
 
       filteredCartProduct.count = filteredCartProduct.count + 1;
-      filteredCartProduct.individualProductAmount =
-        filteredCartProduct.price * filteredCartProduct.count;
+      filteredCartProduct.individualProductAmount = parseFloat(
+        (filteredCartProduct.price * filteredCartProduct.count).toFixed(2)
+      );
       state.totalAmount = state.totalAmount + filteredCartProduct.price;
-
-      console.log(state.totalAmount);
 
       return {
         ...state,
@@ -70,8 +69,11 @@ const LoginReducer = (state = initialState, action) => {
 
       if (filteredCartProductDec.count > 1) {
         filteredCartProductDec.count = filteredCartProductDec.count - 1;
-        filteredCartProductDec.individualProductAmount =
-          filteredCartProductDec.price * filteredCartProductDec.count;
+        filteredCartProductDec.individualProductAmount = parseFloat(
+          (filteredCartProductDec.price * filteredCartProductDec.count).toFixed(
+            2
+          )
+        );
 
         state.totalAmount = state.totalAmount - filteredCartProductDec.price;
 
@@ -81,8 +83,11 @@ const LoginReducer = (state = initialState, action) => {
           totalAmount: state.totalAmount,
         };
       } else {
-        filteredCartProductDec.individualProductAmount =
-          filteredCartProductDec.price * filteredCartProductDec.count;
+        filteredCartProductDec.individualProductAmount = parseFloat(
+          (filteredCartProductDec.price * filteredCartProductDec.count).toFixed(
+            2
+          )
+        );
         filteredCartProductDec.count = filteredCartProductDec.count - 1;
         const newfilteredCart = state.cartProductList.filter(
           (element) => element.id !== action.payload.id
@@ -138,21 +143,9 @@ const LoginReducer = (state = initialState, action) => {
       }
 
     case "TOTAL_AMOUNT":
-      // action.payload.forEach((product, index) => {
-      //   state.totalAmount = state.totalAmount + product.individualProductAmount;
-      // });
-
-      // return {
-      //   ...state,
-      //   totalAmount: ...state.totalAmount,
-      // };
-
-      console.log(Number.isInteger(state.totalAmount));
-      console.log(state.totalAmount);
-
       return {
         ...state,
-        totalAmount: state.totalAmount,
+        totalAmount: parseFloat(state.totalAmount.toFixed(2)),
       };
 
     default:

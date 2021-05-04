@@ -7,12 +7,8 @@ import ProductList from "./ProductList/ProductList";
 import Navigation from "./Navigation/Navigation";
 import Cart from "./components/Cart/Cart";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
 
 const App = (props) => {
-  // if(props.isLoggedIn === false) {
-  //   return <Redirect to = '/' />
-  // }
   return (
     <Router>
       <div>
@@ -22,9 +18,16 @@ const App = (props) => {
           <Route path="/login" component={Login} />
           <Route
             path="/productList"
-            component={props.isLoggedIn ? ProductList : Login}
+            component={
+              props.isLoggedIn && props.firstName !== null ? ProductList : Login
+            }
           />
-          <Route path="/cart" component={props.isLoggedIn ? Cart : Login} />
+          <Route
+            path="/cart"
+            component={
+              props.isLoggedIn && props.firstName !== null ? Cart : Login
+            }
+          />
         </Switch>
       </div>
     </Router>
@@ -34,6 +37,7 @@ const App = (props) => {
 const mapStateToProps = (state) => {
   return {
     isLoggedIn: state.isLoggedIn,
+    firstName: state.firstName,
   };
 };
 

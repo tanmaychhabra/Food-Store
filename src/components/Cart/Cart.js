@@ -8,7 +8,6 @@ import {
   decrementCountChange,
   totalAmountChange,
 } from "../../actions/action";
-//import { SignalCellularNullSharp } from '@material-ui/icons'
 
 const Cart = (props) => {
   useEffect(() => {
@@ -47,7 +46,6 @@ const Cart = (props) => {
                     </Header>
                   </Table.Cell>
                   <Table.Cell>{cartData.count}</Table.Cell>
-                  {/* <Table.Cell>{cartData.price * cartData.count}</Table.Cell> */}
                   <Table.Cell>{cartData.individualProductAmount}</Table.Cell>
                   <Table.Cell>
                     <AiFillMinusCircle
@@ -75,7 +73,9 @@ const Cart = (props) => {
         <Table.Row>
           <Table.Cell></Table.Cell>
           <Table.Cell></Table.Cell>
-          <Table.Cell>Total Amount: {props.totalAmount}</Table.Cell>
+          <Table.Cell style={{ alignContent: "center" }}>
+            <h3>Total Amount: </h3> {props.totalAmount}
+          </Table.Cell>
           <Table.Cell></Table.Cell>
         </Table.Row>
       </Table.Body>

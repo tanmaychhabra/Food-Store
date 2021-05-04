@@ -21,7 +21,6 @@ function ProductList(props) {
   }, []);
 
   const submitHandler = (data) => {
-    // console.log(data)
     data["count"] = 1;
     props.handleCartAdd(data);
   };
@@ -42,6 +41,7 @@ function ProductList(props) {
         };
     }
   };
+
   return (
     <div style={{ backgroundColor: "#758283" }}>
       <Grid columns={3}>
@@ -91,6 +91,7 @@ const mapStateToProps = (state) => {
   return {
     productData: state.productList,
     cartProductList: state.cartProductList,
+    isLoggedIn: state.isLoggedIn,
   };
 };
 
