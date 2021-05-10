@@ -1,11 +1,15 @@
 .nav-bar {
-    height: 80px;
-    width: 100vw;
-    background-color: #C91F37;
+  height: 80px;
+  width: 100vw;
+  background-color: #c91f37;
 }
 
 .nav-links {
-    display: grid;
-    grid-template-columns: 70% repeat(2, 15%);
-    align-items: center;
+  display: grid;
+  grid-template-columns: 70% repeat(2, 15%);
+  align-items: center;
+}
+
+.iconClass:hover {
+  background: #de4839;
 }

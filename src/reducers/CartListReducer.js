@@ -18,15 +18,7 @@ const CartListReducer = (state = initialState, action) => {
       };
 
     case "INCREMENT_COUNT":
-      const filteredCartProduct = state.cartProductList.filter(
-        (item) => item.id === action.payload.id
-      )[0];
-
-      filteredCartProduct.count = filteredCartProduct.count + 1;
-      filteredCartProduct.individualProductAmount = parseFloat(
-        (filteredCartProduct.price * filteredCartProduct.count).toFixed(2)
-      );
-      state.totalAmount = state.totalAmount + filteredCartProduct.price;
+      state.totalAmount = state.totalAmount + action.payload.price;
 
       return {
         ...state,
@@ -35,19 +27,8 @@ const CartListReducer = (state = initialState, action) => {
       };
 
     case "DECREMENT_COUNT":
-      const filteredCartProductDec = state.cartProductList.filter(
-        (item) => item.id === action.payload.id
-      )[0];
-
-      if (filteredCartProductDec.count > 1) {
-        filteredCartProductDec.count = filteredCartProductDec.count - 1;
-        filteredCartProductDec.individualProductAmount = parseFloat(
-          (filteredCartProductDec.price * filteredCartProductDec.count).toFixed(
-            2
-          )
-        );
-
-        state.totalAmount = state.totalAmount - filteredCartProductDec.price;
+      if (action.payload.count >= 1) {
+        state.totalAmount = state.totalAmount - action.payload.price;
 
         return {
           ...state,
@@ -55,16 +36,10 @@ const CartListReducer = (state = initialState, action) => {
           totalAmount: state.totalAmount,
         };
       } else {
-        filteredCartProductDec.individualProductAmount = parseFloat(
-          (filteredCartProductDec.price * filteredCartProductDec.count).toFixed(
-            2
-          )
-        );
-        filteredCartProductDec.count = filteredCartProductDec.count - 1;
         const newfilteredCart = state.cartProductList.filter(
           (element) => element.id !== action.payload.id
         );
-        state.totalAmount = state.totalAmount - filteredCartProductDec.price;
+        state.totalAmount = state.totalAmount - action.payload.price;
         return {
           ...state,
           cartProductList: [...newfilteredCart],
@@ -77,6 +52,13 @@ const CartListReducer = (state = initialState, action) => {
         ...state,
         totalAmount: parseFloat(state.totalAmount.toFixed(2)),
       };
+
+    case "LOGOUT_CART_PRODUCT_LIST_EMPTY":
+      // return {
+      //   ...state,
+      //   cartProductList: initialState.cartProductList,
+      // };
+      return initialState;
 
     default:
       return state;

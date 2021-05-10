@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { addProductsChange, cartProductsAdd } from "../actions/action";
 import { connect } from "react-redux";
 import { Card, Image } from "semantic-ui-react";
@@ -7,22 +7,94 @@ import axios from "axios";
 import { AiFillMinusCircle } from "react-icons/ai";
 import { AiFillPlusCircle } from "react-icons/ai";
 import { incrementCountChange, decrementCountChange } from "../actions/action";
-import { Grid } from "semantic-ui-react";
+import { Grid, Button } from "semantic-ui-react";
 import { Redirect } from "react-router";
+import InfiniteScroll from "react-infinite-scroll-component";
+import "./ProductList.css";
 
 function ProductList(props) {
+  const [loading, setLoading] = useState(false);
+  let startIndex = 0;
+  let endIndex = 6;
+  let allProducts = [];
+
+  // useEffect(() => {
+  //   // const data = Data
+  //   // props.handleProductAdd(data)
+
+  //   if (!props.cartProductList.length) {
+  //     axios.get("./ProductList.json").then((response) => {
+  //       props.handleProductAdd(response.data);
+  //     });
+  //   }
+  // }, []);
+
   useEffect(() => {
-    // const data = Data
-    // props.handleProductAdd(data)
     if (!props.cartProductList.length) {
       axios.get("./ProductList.json").then((response) => {
-        props.handleProductAdd(response.data);
+        allProducts = response.data;
+        let productsToDisplayOnFirstLoad = allProducts.slice(
+          startIndex,
+          endIndex
+        );
+        console.log("Called first Time", productsToDisplayOnFirstLoad);
+        props.handleProductAdd(productsToDisplayOnFirstLoad);
       });
     }
   }, []);
 
+  // startIndex = startIndex + 6;
+  // endIndex = endIndex + 6;
+
+  // window.addEventListener("scroll", function () {
+  //   let scrollPosition = window.scrollY;
+  //   let productsToDisplayOnScroll = [];
+  //   if (scrollPosition === 657) {
+  //     startIndex = startIndex + 6;
+  //     endIndex = endIndex + 6;
+  //     productsToDisplayOnScroll = allProducts.slice(startIndex, endIndex);
+  //     console.log(productsToDisplayOnScroll);
+  //     props.handleProductAdd(productsToDisplayOnScroll);
+  //   }
+
+  //   console.log(startIndex, endIndex);
+  // });
+
+  // useEffect(() => {
+  //   // const data = Data
+  //   // props.handleProductAdd(data)
+  //   if (!props.cartProductList.length) {
+  //     axios.get("./ProductList.json").then((response) => {
+  //       const productsToDisplay = response.data.slice(startIndex, endIndex);
+  //       props.handleProductAdd(productsToDisplay);
+  //     });
+  //   }
+  // }, []);
+
+  // if (scrollPosition > 290) {
+  //   startIndex = startIndex + 6;
+  //   endIndex = endIndex + 6;
+  //   const productsToDisplay = props.productData.slice(startIndex, endIndex);
+  //   props.handleProductAdd(productsToDisplay);
+  // }
+
+  window.addEventListener("scroll", function () {
+    var wrap = document.getElementById("wrap");
+    //var contentHeight = wrap.offsetHeight; // Gets page content height
+    var yOffset = window.pageYOffset; // Gets the vertical scroll position
+    var y = yOffset + window.innerHeight;
+
+    if (y >= 600) {
+      wrap.innerHTML += '<div className = "newData"></div>';
+      startIndex = startIndex + 6;
+      endIndex = endIndex + 6;
+      const productsToDisplay = props.productData.slice(startIndex, endIndex);
+      console.log(productsToDisplay);
+      props.handleProductAdd(productsToDisplay);
+    }
+  });
+
   const submitHandler = (data) => {
-    console.log(props.productData);
     data["count"] = 1;
     props.handleCartAdd(data);
   };
@@ -30,13 +102,28 @@ function ProductList(props) {
   const handleCountChange = (product, operation) => {
     switch (operation) {
       case "increase":
+        product.count = product.count + 1;
+        product.individualProductAmount = parseFloat(
+          (product.price * product.count).toFixed(2)
+        );
         props.incrementCountChange(product);
         break;
 
       case "decrease":
-        props.decrementCountChange(product);
+        if (product.count > 1) {
+          product.count = product.count - 1;
+          product.individualProductAmount = parseFloat(
+            (product.price * product.count).toFixed(2)
+          );
+          props.decrementCountChange(product);
+        } else {
+          product.individualProductAmount = parseFloat(
+            (product.price * product.count).toFixed(2)
+          );
+          product.count = product.count - 1;
+          props.decrementCountChange(product);
+        }
         break;
-
       default:
         return {
           product,
@@ -45,16 +132,15 @@ function ProductList(props) {
   };
 
   return (
-    <div style={{ backgroundColor: "#758283" }}>
+    <div id="wrap" style={{ backgroundColor: "#758283" }}>
       {props.isLoggedIn ? (
         <>
-          <Redirect to="/productList" />
-          <Grid columns={3}>
-            <Grid.Row>
+          <Grid>
+            <Grid.Row style={{ padding: "20px" }}>
               {props.productData &&
                 props.productData.map((product, index) => {
                   return (
-                    <Grid.Column>
+                    <Grid.Column mobile={4} tablet={4} computer={5}>
                       <Card style={{ marginTop: "20px" }}>
                         <Image src={product.image} />
                         <Card.Content>
@@ -124,11 +210,6 @@ const mapDispatchToProps = (dispatch) => {
 // height: 1000px;
 // `
 
-const CardWrapper = styled.div`
-  width: 100vw;
-  margin: 40px;
-`;
-
 const QuantityWrapper = styled.div`
   display: grid;
   grid-template-columns: 30% 40% 30%;
@@ -138,6 +219,12 @@ const QuantityWrapper = styled.div`
   h3 {
     align: center;
   }
+
+  @media (max-width: 991px) {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    width: auto;
+  })
 `;
 
 const ButtonWrapper = styled.button`
@@ -146,6 +233,12 @@ const ButtonWrapper = styled.button`
   height: 40px;
   margin-top: 20px;
   width: 120px;
+
+  @media (max-width: 710px) {
+    height: auto;
+    width: auto;
+    border-radius: auto;
+  }
 
   :hover {
     background-color: #d82e2f;

@@ -1,38 +1,60 @@
 import React, { useState } from "react";
 import { Form, Button } from "semantic-ui-react";
-import Navigation from "../../Navigation/Navigation";
+// import Navigation from "../../Navigation/Navigation";
 import { connect } from "react-redux";
-import {
-  firstNameChange,
-  submitChange,
-  firstNameErrorHandler,
-  emailErrorHandler,
-  passwordErrorHandler,
-} from "../../actions/action";
+import { firstNameChange, submitChange } from "../../actions/action";
 import ProductList from "../../ProductList/ProductList";
 import styled from "styled-components";
 
 function Login(props) {
-  let [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  let [email, setEmail] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [firstNameError, setFirstNameError] = useState("");
 
   const handleSubmitChange = () => {
+    // if (props.firstName === "admin" && email === "admin123@gmail.com") {
+    //   props.history.push("/productList");
+    //   props.submitHandler();
+    // }
+    props.history.push("/productList");
     props.submitHandler();
   };
 
-  const isButtonDisabledHandler = () => {
-    //     if(props.firstNameError || props.emailError || props.passwordError) {
-    //         setIsButtonDisabled(true)
-    //     }
-    //     else {
-    //         setIsButtonDisabled(false)
-    //     }
+  const firstNameErrorHandler = () => {
+    if (props.firstName < 2) {
+      setFirstNameError("Enter correct first name");
+    } else {
+      setFirstNameError(null);
+    }
+  };
 
+  const emailErrorHandler = () => {
+    var pattern = new RegExp(
+      /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
+    );
+    if (!pattern.test(email)) {
+      setEmailError("Enter correct email");
+    } else {
+      setEmailError(null);
+    }
+  };
+
+  const passwordErrorHandler = () => {
+    if (password === "" || password.length < 6) {
+      setPasswordError("Enter correct password");
+    } else {
+      setPasswordError(null);
+    }
+  };
+
+  const isButtonDisabledHandler = () => {
     if (
-      props.emailError !== null ||
-      props.firstNameError !== null ||
-      props.passwordError !== null
+      emailError !== null ||
+      firstNameError !== null ||
+      passwordError !== null
     ) {
       setIsButtonDisabled(true);
     } else {
@@ -42,60 +64,56 @@ function Login(props) {
 
   return (
     <Wrapper>
-      {props.isLoggedIn ? (
-        <ProductList />
-      ) : (
-        <FormWrapper>
-          <Form>
-            <Form.Field>
-              <label>Firstname: </label>
-              <input
-                type="text"
-                value={props.firstName}
-                onChange={(e) => {
-                  props.firstNameHandler(e.target.value);
-                  props.firstNameErrorHandler(props.firstName);
-                  isButtonDisabledHandler();
-                }}
-              />
-              <p>{props.firstNameError}</p>
-            </Form.Field>
-            <Form.Field>
-              <label>Email: </label>
-              <input
-                type="text"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  props.emailErrorHandler(email);
-                  isButtonDisabledHandler();
-                }}
-              />
-              <p>{props.emailError}</p>
-            </Form.Field>
-            <Form.Field>
-              <label>Password: </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  props.passwordErrorHandler(password);
-                  isButtonDisabledHandler();
-                }}
-              />
-              <p>{props.passwordError}</p>
-            </Form.Field>
-            <ButtonWrapper
-              type="submit"
-              onClick={handleSubmitChange}
-              disabled={isButtonDisabled}
-            >
-              Login
-            </ButtonWrapper>
-          </Form>
-        </FormWrapper>
-      )}
+      <FormWrapper>
+        <Form>
+          <Form.Field>
+            <label>Firstname: </label>
+            <input
+              type="text"
+              value={props.firstName}
+              onChange={(e) => {
+                props.firstNameHandler(e.target.value);
+                firstNameErrorHandler();
+                isButtonDisabledHandler();
+              }}
+            />
+            <p>{firstNameError}</p>
+          </Form.Field>
+          <Form.Field>
+            <label>Email: </label>
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                emailErrorHandler();
+                isButtonDisabledHandler();
+              }}
+            />
+            <p>{emailError}</p>
+          </Form.Field>
+          <Form.Field>
+            <label>Password: </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                passwordErrorHandler();
+                isButtonDisabledHandler();
+              }}
+            />
+            <p>{passwordError}</p>
+          </Form.Field>
+          <ButtonWrapper
+            type="submit"
+            onClick={handleSubmitChange}
+            disabled={isButtonDisabled}
+          >
+            Login
+          </ButtonWrapper>
+        </Form>
+      </FormWrapper>
     </Wrapper>
   );
 }
@@ -103,9 +121,6 @@ function Login(props) {
 const mapDispatchToProps = (dispatch) => {
   return {
     firstNameHandler: (data) => dispatch(firstNameChange(data)),
-    emailErrorHandler: (data) => dispatch(emailErrorHandler(data)),
-    passwordErrorHandler: (data) => dispatch(passwordErrorHandler(data)),
-    firstNameErrorHandler: (data) => dispatch(firstNameErrorHandler(data)),
     submitHandler: () => dispatch(submitChange()),
   };
 };
@@ -114,9 +129,6 @@ const mapStateToProps = (state) => {
   return {
     firstName: state.LoginReducer.firstName,
     isLoggedIn: state.LoginReducer.isLoggedIn,
-    firstNameError: state.LoginReducer.firstNameError,
-    emailError: state.LoginReducer.emailError,
-    passwordError: state.LoginReducer.passwordError,
   };
 };
 

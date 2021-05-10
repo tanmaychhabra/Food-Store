@@ -9,6 +9,7 @@ import {
   totalAmountChange,
 } from "../../actions/action";
 import { Redirect } from "react-router";
+import styled from "styled-components";
 
 const Cart = (props) => {
   useEffect(() => {
@@ -16,19 +17,34 @@ const Cart = (props) => {
   }, [props.cartList]);
 
   const incrementHandler = (data) => {
+    data.count = data.count + 1;
+    data.individualProductAmount = parseFloat(
+      (data.price * data.count).toFixed(2)
+    );
     props.incrementCountChange(data);
   };
 
   const decrementHandler = (data) => {
-    props.decrementCountChange(data);
+    if (data.count > 1) {
+      data.count = data.count - 1;
+      data.individualProductAmount = parseFloat(
+        (data.price * data.count).toFixed(2)
+      );
+      props.decrementCountChange(data);
+    } else {
+      data.individualProductAmount = parseFloat(
+        (data.price * data.count).toFixed(2)
+      );
+      data.count = data.count - 1;
+      props.decrementCountChange(data);
+    }
   };
 
   return (
     <div>
       {props.isLoggedIn ? (
         <>
-          <Redirect to="/cart" />
-          <Table>
+          <Table responsive>
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>Product Name</Table.HeaderCell>
@@ -81,7 +97,9 @@ const Cart = (props) => {
                 <Table.Cell></Table.Cell>
                 <Table.Cell></Table.Cell>
                 <Table.Cell style={{ alignContent: "center" }}>
-                  <h3>Total Amount: </h3> {props.totalAmount}
+                  <TotalAmountWrapper>
+                    Final Amount: {props.totalAmount}
+                  </TotalAmountWrapper>
                 </Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
@@ -110,5 +128,11 @@ const mapDispatchToProps = (dispatch) => {
     totalAmountChange: (data) => dispatch(totalAmountChange(data)),
   };
 };
+
+const TotalAmountWrapper = styled.div`
+  font-weight: bold;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+`;
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cart);

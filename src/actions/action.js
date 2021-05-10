@@ -4,10 +4,9 @@ const ADD_PRODUCTS = "ADD_PRODUCTS";
 const CART_PRODUCTS = "CART_PRODUCTS";
 const INCREMENT_COUNT = "INCREMENT_COUNT";
 const DECREMENT_COUNT = "DECREMENT_COUNT";
-const EMAIL_ERROR = "EMAIL_ERROR";
-const PASSWORD_ERROR = "PASSWORD_ERROR";
-const FIRST_NAME_ERROR = "FIRST_NAME_ERROR";
 const TOTAL_AMOUNT = "TOTAL_AMOUNT";
+const LOGOUT = "LOGOUT";
+const LOGOUT_CART_PRODUCT_LIST_EMPTY = "LOGOUT_CART_PRODUCT_LIST_EMPTY";
 
 export const firstNameChange = (data) => {
   return {
@@ -24,6 +23,7 @@ export const submitChange = () => {
 };
 
 export const addProductsChange = (data) => {
+  console.log("Called Product Add");
   return {
     type: ADD_PRODUCTS,
     payload: data,
@@ -51,30 +51,21 @@ export const decrementCountChange = (data) => {
   };
 };
 
-export const emailErrorHandler = (data) => {
-  return {
-    type: EMAIL_ERROR,
-    payload: data,
-  };
-};
-
-export const firstNameErrorHandler = (data) => {
-  return {
-    type: FIRST_NAME_ERROR,
-    payload: data,
-  };
-};
-
-export const passwordErrorHandler = (data) => {
-  return {
-    type: PASSWORD_ERROR,
-    payload: data,
-  };
-};
-
 export const totalAmountChange = (data) => {
   return {
     type: TOTAL_AMOUNT,
     payload: data,
+  };
+};
+
+export const handleLogout = () => {
+  return {
+    type: LOGOUT,
+  };
+};
+
+export const handleCartProductListEmpty = () => {
+  return {
+    type: LOGOUT_CART_PRODUCT_LIST_EMPTY,
   };
 };
