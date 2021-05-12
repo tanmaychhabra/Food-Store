@@ -88,12 +88,20 @@ function ProductList(props) {
     var yOffset = window.pageYOffset; // Gets the vertical scroll position
     var y = yOffset + window.innerHeight;
 
-    if (y >= 657 && y <= 659) {
+    if (y >= 657) {
+      let len = allProducts.length;
+      let i = 0;
+
       //wrap.innerHTML += '<div className = "newData"></div>';
+      setLoading(true);
       startIndex = startIndex + 6;
       endIndex = endIndex + 6;
       const productsToDisplay = allProducts.slice(startIndex, endIndex);
-      props.productsToDisplayOnScroll([...productsToDisplay]);
+      // props.productsToDisplayOnScroll([...productsToDisplay]);
+      setTimeout(function () {
+        setLoading(false);
+        props.productsToDisplayOnScroll([...productsToDisplay]);
+      }, 6000);
       //modifiedProductsChange(productsToDisplay);
     }
   });
@@ -186,6 +194,7 @@ function ProductList(props) {
                 })}
             </Grid.Row>
           </Grid>
+          {loading ? <h3>Loading...</h3> : null}
         </>
       ) : (
         <Redirect to="/login" />
