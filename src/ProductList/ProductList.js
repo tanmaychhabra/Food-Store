@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { addProductsChange, cartProductsAdd } from "../actions/action";
+import {
+  addProductsChange,
+  productsToDisplayOnScroll,
+  cartProductsAdd,
+} from "../actions/action";
 import { connect } from "react-redux";
 import { Card, Image } from "semantic-ui-react";
 import styled from "styled-components";
@@ -33,12 +37,12 @@ function ProductList(props) {
     if (!props.cartProductList.length) {
       axios.get("./ProductList.json").then((response) => {
         allProducts = response.data;
+        props.handleProductAdd(allProducts);
         let productsToDisplayOnFirstLoad = allProducts.slice(
           startIndex,
           endIndex
         );
-        console.log("Called first Time", productsToDisplayOnFirstLoad);
-        props.handleProductAdd(productsToDisplayOnFirstLoad);
+        props.productsToDisplayOnScroll([...productsToDisplayOnFirstLoad]);
       });
     }
   }, []);
@@ -79,18 +83,18 @@ function ProductList(props) {
   // }
 
   window.addEventListener("scroll", function () {
-    var wrap = document.getElementById("wrap");
+    //var wrap = document.getElementById("wrap");
     //var contentHeight = wrap.offsetHeight; // Gets page content height
     var yOffset = window.pageYOffset; // Gets the vertical scroll position
     var y = yOffset + window.innerHeight;
 
-    if (y >= 600) {
-      wrap.innerHTML += '<div className = "newData"></div>';
+    if (y >= 657 && y <= 659) {
+      //wrap.innerHTML += '<div className = "newData"></div>';
       startIndex = startIndex + 6;
       endIndex = endIndex + 6;
-      const productsToDisplay = props.productData.slice(startIndex, endIndex);
-      console.log(productsToDisplay);
-      props.handleProductAdd(productsToDisplay);
+      const productsToDisplay = allProducts.slice(startIndex, endIndex);
+      props.productsToDisplayOnScroll([...productsToDisplay]);
+      //modifiedProductsChange(productsToDisplay);
     }
   });
 
@@ -131,14 +135,18 @@ function ProductList(props) {
     }
   };
 
+  const modifiedProductsChange = (productsToDisplay) => {
+    for (let i = 0; i < productsToDisplay.length; i++) {}
+  };
+
   return (
     <div id="wrap" style={{ backgroundColor: "#758283" }}>
       {props.isLoggedIn ? (
         <>
           <Grid>
             <Grid.Row style={{ padding: "20px" }}>
-              {props.productData &&
-                props.productData.map((product, index) => {
+              {props.modifiedProductData &&
+                props.modifiedProductData.map((product, index) => {
                   return (
                     <Grid.Column mobile={4} tablet={4} computer={5}>
                       <Card style={{ marginTop: "20px" }}>
@@ -188,7 +196,8 @@ function ProductList(props) {
 
 const mapStateToProps = (state) => {
   return {
-    productData: state.ProductListReducer.productList,
+    initialProductData: state.ProductListReducer.initialProductList,
+    modifiedProductData: state.ProductListReducer.modifiedProductList,
     cartProductList: state.CartListReducer.cartProductList,
     isLoggedIn: state.LoginReducer.isLoggedIn,
   };
@@ -197,6 +206,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     handleProductAdd: (data) => dispatch(addProductsChange(data)),
+    productsToDisplayOnScroll: (data) =>
+      dispatch(productsToDisplayOnScroll(data)),
     handleCartAdd: (data) => dispatch(cartProductsAdd(data)),
     incrementCountChange: (data) => dispatch(incrementCountChange(data)),
     decrementCountChange: (data) => dispatch(decrementCountChange(data)),

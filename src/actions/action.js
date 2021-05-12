@@ -1,6 +1,7 @@
 const FIRSTNAME = "FIRSTNAME";
 const SUBMIT = "SUBMIT";
 const ADD_PRODUCTS = "ADD_PRODUCTS";
+const MODIFIED_PRODUCTS = "MODIFIED_PRODUCTS";
 const CART_PRODUCTS = "CART_PRODUCTS";
 const INCREMENT_COUNT = "INCREMENT_COUNT";
 const DECREMENT_COUNT = "DECREMENT_COUNT";
@@ -26,6 +27,13 @@ export const addProductsChange = (data) => {
   console.log("Called Product Add");
   return {
     type: ADD_PRODUCTS,
+    payload: data,
+  };
+};
+
+export const productsToDisplayOnScroll = (data) => {
+  return {
+    type: MODIFIED_PRODUCTS,
     payload: data,
   };
 };

@@ -1,5 +1,6 @@
 const initialState = {
-  productList: [],
+  initialProductList: [],
+  modifiedProductList: [],
 };
 
 const ProductListReducer = (state = initialState, action) => {
@@ -10,7 +11,16 @@ const ProductListReducer = (state = initialState, action) => {
       });
       return {
         ...state,
-        productList: action.payload,
+        initialProductList: action.payload,
+      };
+
+    case "MODIFIED_PRODUCTS":
+      console.log(action.payload);
+      state.modifiedProductList.push(...action.payload);
+      console.log(state.modifiedProductList);
+      return {
+        ...state,
+        modifiedProductList: [...state.modifiedProductList],
       };
     default:
       return state;
